@@ -16,7 +16,7 @@
     "express-basic-auth": "^1.2.0",
     "node-fetch": "^2.6.1",
     "redis": "^3.0.2",
-    "sequelize": "^6.3.5",
+    "sequelize": "^5.15.1",
     "sqlite3": "^5.0.0",
     "xlsx": "^0.16.9",
     "cheerio": "^0.22.0"
