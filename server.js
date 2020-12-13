@@ -37,4 +37,3 @@ try {
   console.log('Failedto start app.');
   console.log(error);
 }
-
