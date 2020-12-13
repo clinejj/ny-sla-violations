@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NY SLA Violations Raw Data</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header>
+      <h1>
+        NY SLA Violations Raw Data
+      </h1>
+    </header>
+
+    <main>
+      <p>
+        <a href='/'>home</a> -
+        &nbsp;<% if (type === 'violation') { %>violations<% } else { %><a href="/raw/violations">violations</a><% } %> -
+        &nbsp;<% if (type === 'suspension') { %>suspensions<% } else { %><a href="/raw/suspensions">suspensions</a><% } %> -        
+        &nbsp;<% if (type === 'premise') { %>premises<% } else { %><a href="/raw/premises">premises</a><% } %> -
+        &nbsp;<% if (type === 'update') { %>updates<% } else { %><a href="/raw/updates">updates</a><% } %> -
+        &nbsp;<% if (type === 'missing') { %>missing<% } else { %><a href="/raw/missing">missing</a><% } %>
+      </p>
+      <p>
+        <table>
+          <thead>
+            <tr>
+              <% for (let idx in keys) { %>
+                <th><%= keys[idx] %></th>
+              <% } %>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let idx in models) { %>
+              <tr>
+                <% for (let key in keys) { %>
+                  <% let value = models[idx][keys[key]] %>
+                  <% if (keys[key].indexOf('createdAt') >= 0 || keys[key].indexOf('updatedAt') >= 0) value = value.slice(0, 19) %>
+                  <td><%= value %>
+                  </td>
+                <% } %>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </p>
+    </main>
+
+     <%- include('components/footer'); %>
+    
+  </body>
+</html>
