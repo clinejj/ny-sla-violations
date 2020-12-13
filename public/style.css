@@ -1,0 +1,123 @@
+/* styles */
+/* called by your view template */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 2em;
+}
+
+h1 {
+  font-style: italic;
+  color: #373fff;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.rainbow-text {
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.map {
+  height: 600px;
+  width: 100%;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+table, td {
+    border: 1px solid #333;
+}
+
+td, th {
+  padding: 6px 12px;
+}
+
+thead, tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+footer {
+  margin-top: 50px;
+  padding-top: 25px;
+  border-top: 1px solid lightgrey;
+}
+
+.color-red {
+  background-color: #B91730;
+}
+
+.color-orange {
+  background-color: #e4690c;
+}
+
+.color-yellow {
+  background-color: #e4c00c;
+}
+
+.marker {
+  border-radius: 100%;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 420px;
+}
+.ol-popup:after, .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+.ol-popup-closer:after {
+  content: "✖";
+}
+
+.small-text {
+  font-size: 12px;
+}
