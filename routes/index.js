@@ -1,12 +1,12 @@
 const helpers = require('../util/helpers');
 
 module.exports = (app) => {
-  
+
   app.get('/', async (req, res) => {
     let premiseLookup = {};
     let premiseData = [];
     let lastUpdateData = {};
-    
+
     // fetch all premises, put in license -> premise map
     const premises = await app.get('models').Premise.findAll({ raw: true });
     for (let i=0; i<premises.length; i++) {
@@ -23,7 +23,7 @@ module.exports = (app) => {
       });
       premiseLookup[premise.licenseId] = i;
     }
-    
+
     // fetch all suspensions, put in license -> suspension map
     const suspensions = await app.get('models').Suspension.findAll({ raw: true });
     suspensions.forEach(suspension => {
@@ -38,7 +38,7 @@ module.exports = (app) => {
         premiseData[index]['county'] = suspension.county;
       }
     });
-    
+
     // fetch all violations, put in license -> [violations] map
     const violations = await app.get('models').Violation.findAll({ raw: true });
     violations.forEach(viol => {
@@ -52,7 +52,7 @@ module.exports = (app) => {
         premiseData[index]['licenseType'] = viol.licenseType;
       }
     });
-    
+
     // fetch last successful and unsuccessful update, store data
     const lastSuccessUpdate = await app.get('models').Update.findOne({ 
       where: { success: true },
@@ -67,7 +67,7 @@ module.exports = (app) => {
       successDate: lastSuccessUpdate.createdAt,
       mostRecentDate: lastUpdate.createdAt
     };
-    
+
     res.render('index', { premiseData: premiseData, lastUpdate: lastUpdateData });
   });
 };

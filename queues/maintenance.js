@@ -37,11 +37,11 @@ const updateData = async (job) => {
       const $ = cheerio.load(bodyText);
 
       fileURL = $('a', $('h5').siblings()[0]).text().trim();
-      
+
       if (!fileURL || fileURL.indexOf('http') !== 0) {
         throw 'No linked file on redirect page';
       }
-      
+
       response = await fetch(fileURL);
       if (!response.ok) {
         throw 'Could not download after redirect';
@@ -49,7 +49,7 @@ const updateData = async (job) => {
     } else if (!response.ok) {
       throw 'Did not receive successful file';
     }
-    
+
     // Check to see if we already processed this URL
     const lastSuccessUpdate = await models.Update.findOne({ 
       where: { success: true },
@@ -62,26 +62,26 @@ const updateData = async (job) => {
       filePath = fileURL;
       return Promise.resolve(status);
     }
-    
+
     let respData = await response.buffer();
-    
+
     // 2. parse XLSX
     const workbook = xlsx.read(respData, { type:'buffer' });
     const charges = workbook.Sheets['Charges'];
     const suspensions = workbook.Sheets['Summary Suspensions'];
-    
+
     if (!charges || !suspensions) {
       throw 'Did not find expected workbook sheet names';
     }
-    
+
     // 3. dump data to DB
-    
+
     let charges_json = xlsx.utils.sheet_to_json(charges, { raw: false });
     let suspensions_json = xlsx.utils.sheet_to_json(suspensions, { raw: false });
-    
+
     let job_progress = 0;
     let job_total = charges_json.length + suspensions_json.length;
-    
+
     // 3a. write each charge
     for(let i=0; i<charges_json.length; i++) {
       let entry = charges_json[i];
@@ -100,9 +100,9 @@ const updateData = async (job) => {
           violationDescription: entry['viol_desc'].trim()
         }
       });
-      
+
       let violation = violCreate[0];
-      
+
       // 3ab. add premise if doesn't exist (with reverse geo lookup)
       let premiseFind = await models.Premise.findOrCreate({
         where: {
@@ -131,7 +131,7 @@ const updateData = async (job) => {
         }
         let address = helpers.cleanAddress(entry['premise_address'].trim());
         let responseJSON = await helpers.geocodeAddress(address, city);
-        
+
         if (responseJSON.length) {
           let matchedResponse = helpers.findPremiseMatch(entry, city, responseJSON);
           if (matchedResponse && matchedResponse.lat && matchedResponse.lon) {
@@ -147,15 +147,15 @@ const updateData = async (job) => {
           console.log(entry);
         }
       }
-      
+
       job_progress++;
       job.progress(job_progress/job_total*100);
     };
-    
+
     // 4. write suspensions
     for (let i=0; i<suspensions_json.length; i++) {
       const entry = suspensions_json[i];
-      
+
       let dateSplit = entry['Date Imposed'].trim().split('/');
       let dateImposed = new Date(parseInt('20' + dateSplit[2]), parseInt(dateSplit[0]) - 1, parseInt(dateSplit[1]));
       const suspCreate = await models.Suspension.findOrCreate({
@@ -179,14 +179,14 @@ const updateData = async (job) => {
         susp.dateImposed = dateImposed;
         susp = await susp.save();
       }
-      
+
       // TODO: handle if premise doesn't exist in premise DB?
-      
+
       job_progress++;
       job.progress(job_progress/job_total*100);
     };
-    
-    
+
+
     status = status === '' ? 'Success' : status;
     success = true;
     fileDate = helpers.dateFromUrl(fileURL);

@@ -64,7 +64,7 @@ let featuresArray = [];
 for (let i=0; i < premiseData.length; i++) {
   let premise = premiseData[i];
   if (!premise) { continue; }
-  
+
   let feature = new ol.Feature({
     geometry: new ol.geom.Point(ol.proj.fromLonLat([premise.lon, premise.lat])),
     description: premise
@@ -103,7 +103,7 @@ map.addInteraction(select);
 
 select.on('select', (e) => {
   let coordinate = e.mapBrowserEvent.coordinate;
-  
+
   if (e.selected[0]) {
     content.innerHTML = getPopupHtml(e.selected[0]);
     overlay.setPosition(coordinate);

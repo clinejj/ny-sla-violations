@@ -9,7 +9,7 @@ const dateFromUrl = (url) => {
       break;
     }
   };
-  
+
   return new Date(parseInt('20' + underSplit[2]), parseInt(underSplit[0]) - 1, parseInt(underSplit[1]));
 };
 
@@ -31,7 +31,7 @@ const cleanAddress = (address) => {
 
 const geocodeAddress = async (address, city) => {
   let responseJSON = [];
-  
+
   try {
     let geoURL = encodeURI(`https://nominatim.openstreetmap.org/search?street=${address}&city=${city}&state=NY&country=USA&addressdetails=1&format=json`);
     let geoResponse = await fetch(geoURL, { headers: { 'Referer': `${process.env.PROJECT_DOMAIN}.glitch.me` }});
@@ -54,7 +54,7 @@ const geocodeAddress = async (address, city) => {
   } catch (error) {
     console.error(error);
   }
-  
+
   return responseJSON;
 };
 
@@ -62,7 +62,7 @@ const findPremiseMatch = (entry, modifiedCity, responses) => {
   let mismatch = false;
   let entryCity = entry['premise_city'].trim();
   let county = entry['county'].trim();
-  
+
   for (let j=0; j<responses.length; j++) {
     let response = responses[j];
     if (response && response.address) {

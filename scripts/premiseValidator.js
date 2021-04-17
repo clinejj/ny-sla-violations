@@ -4,20 +4,20 @@ const models = require('../models');
 
 const premiseValidater = async () => {
   let output = '';
-  
+
   try {
     const violations = await models.Violation.findAll({ raw: true });
-    
+
     let mismatches = 0;
     let notFound = 0;
     let checkedPremises = {};
     for (let i=0; i<violations.length; i++) {
       let entry = violations[i];
-      
+
       if (checkedPremises[entry.licenseId]) {
         continue;
       }
-      
+
       let city = entry.premiseCity;
       let county = entry.county;
       if (county.indexOf('RICH') != -1) {
@@ -33,7 +33,7 @@ const premiseValidater = async () => {
       }
       let address = helpers.cleanAddress(entry.premiseAddress);
       let responseJSON = await helpers.geocodeAddress(address, city);
-      
+
       if (!responseJSON.length) {
         output += '\n' +`Could not find premise for: ${entry.licenseId} - ${entry.chargeDate}`;
         output += '\n' +`Entry ${i+1}/${violations.length}`;
@@ -41,9 +41,9 @@ const premiseValidater = async () => {
         checkedPremises[entry.licenseId] = {};
         continue;
       }
-      
+
       checkedPremises[entry.licenseId] = responseJSON[0];
-      
+
       let mismatch = false;
       for (let j=0; j<responseJSON.length; j++) {
         let response = responseJSON[j];
@@ -70,7 +70,7 @@ const premiseValidater = async () => {
               mismatch = true;
             }
           }
-          
+
           if (!mismatch) {
             break;
           }
@@ -78,7 +78,7 @@ const premiseValidater = async () => {
           output += '\n' + `No address for ${entry.licenseId} on response [${j}]`;
         }
       }
-      
+
       if (mismatch) {
         let respAdd = responseJSON[0].address;
         output += '\n' + `Mismatch for ${entry.licenseId} - returned ${respAdd.city}-${respAdd.suburb}, expected ${city}-${entry.premiseCity}-${entry.county}`;
@@ -86,12 +86,12 @@ const premiseValidater = async () => {
         mismatches++;
         output += '\n' + `Entry ${i+1}/${violations.length}`;
       }
-      
+
       if (i%10 == 0) {
         console.log(`${i}/${violations.length-1}`);
       }
     }
-    
+
     output += '\n' + `Total mismatches: ${mismatches}`;
     output += '\n' + `Total not found: ${notFound}`;
   } catch (error) {
